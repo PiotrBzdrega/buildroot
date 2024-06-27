@@ -417,7 +417,9 @@ config BR2_LINUX_KERNEL_CUSTOM_DTS_PATH
 	  Paths to out-of-tree Device Tree Source (.dts) and Device Tree
 	  Source Include (.dtsi) files, separated by spaces. These files
 	  will be copied to the kernel sources and the .dts files will
-	  be compiled from there.
+	  be compiled from there. You can also use a directory which
+	  name match the vendor name as in
+	  arch/<arch>/boot/dts/<vendor>/
 
 config BR2_LINUX_KERNEL_DTB_KEEP_DIRNAME
 	bool "Keep the directory name of the Device Tree"

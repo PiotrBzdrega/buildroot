@@ -195,7 +195,15 @@ LINUX_DTS_NAME += $(call qstrip,$(BR2_LINUX_KERNEL_INTREE_DTS_NAME))
 # and .dtsi files in BR2_LINUX_KERNEL_CUSTOM_DTS_PATH. Both will be
 # copied to arch/<arch>/boot/dts, but only the .dts files will
 # actually be generated as .dtb.
-LINUX_DTS_NAME += $(basename $(filter %.dts,$(notdir $(call qstrip,$(BR2_LINUX_KERNEL_CUSTOM_DTS_PATH)))))
+# In case we are copying a vendor dts subdirectory as in
+# arch/<arch>/boot/dts/<vendor>/ we have to append the wildcard to the
+# folder to list the devicetree.
+LINUX_KERNEL_CUSTOM_DTS_PATH = $(call qstrip,$(BR2_LINUX_KERNEL_CUSTOM_DTS_PATH))
+ifneq ($(wildcard $(LINUX_KERNEL_CUSTOM_DTS_PATH)/.*),)
+LINUX_DTS_NAME += $(addprefix $(notdir $(LINUX_KERNEL_CUSTOM_DTS_PATH))/,$(basename $(filter %.dts,$(notdir $(wildcard $(LINUX_KERNEL_CUSTOM_DTS_PATH)/*)))))
+else
+LINUX_DTS_NAME += $(basename $(filter %.dts,$(notdir $(wildcard $(LINUX_KERNEL_CUSTOM_DTS_PATH)))))
+endif
 
 LINUX_DTBS = $(addsuffix .dtb,$(LINUX_DTS_NAME))
 
@@ -502,8 +510,8 @@ endif
 #   http://lists.busybox.net/pipermail/buildroot/2020-May/282727.html
 define LINUX_BUILD_CMDS
 	$(call KCONFIG_DISABLE_OPT,CONFIG_GCC_PLUGINS)
-	$(foreach dts,$(call qstrip,$(BR2_LINUX_KERNEL_CUSTOM_DTS_PATH)), \
-		cp -f $(dts) $(LINUX_ARCH_PATH)/boot/dts/
+	$(foreach dts,$(LINUX_KERNEL_CUSTOM_DTS_PATH), \
+		cp -rf $(dts) $(LINUX_ARCH_PATH)/boot/dts/
 	)
 	$(LINUX_MAKE_ENV) $(BR2_MAKE) $(LINUX_MAKE_FLAGS) -C $(@D) all
 	$(LINUX_MAKE_ENV) $(BR2_MAKE) $(LINUX_MAKE_FLAGS) -C $(@D) $(LINUX_TARGET_NAME)
