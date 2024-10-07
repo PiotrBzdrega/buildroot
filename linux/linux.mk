@@ -462,6 +462,12 @@ define LINUX_INSTALL_DTB
 			$(1)/$(if $(BR2_LINUX_KERNEL_DTB_KEEP_DIRNAME),$(dtb),$(notdir $(dtb)))
 	)
 endef
+define LINUX_INSTALL_DTBOS
+	$(foreach dtb,$(LINUX_DTBS), \
+		$(foreach dtbo,$(wildcard $(LINUX_ARCH_PATH)/boot/dts/$(dir $(dtb))*.dtbo),
+			install -D $(dtbo) $(1)/$(notdir $(dtbo)))
+	)
+endef
 endif # BR2_LINUX_KERNEL_APPENDED_DTB
 endif # BR2_LINUX_KERNEL_DTB_IS_SELF_BUILT
 endif # BR2_LINUX_KERNEL_DTS_SUPPORT
@@ -533,6 +539,7 @@ ifeq ($(BR2_LINUX_KERNEL_INSTALL_TARGET),y)
 define LINUX_INSTALL_KERNEL_IMAGE_TO_TARGET
 	$(call LINUX_INSTALL_IMAGE,$(TARGET_DIR)/boot)
 	$(call LINUX_INSTALL_DTB,$(TARGET_DIR)/boot)
+	$(call LINUX_INSTALL_DTBOS,$(TARGET_DIR)/lib/firmware)
 endef
 endif
 
