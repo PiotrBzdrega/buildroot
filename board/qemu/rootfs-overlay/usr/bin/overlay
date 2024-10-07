@@ -1,0 +1,38 @@
+#!/bin/sh
+
+set -eu
+
+OVERLAYS=/sys/kernel/config/device-tree/overlays
+FIRMWARE=/lib/firmware
+
+ovl_add()
+{
+        if [ -e $OVERLAYS/$1 ]; then
+                echo Overlay $1 already exists
+                exit -1
+        fi
+
+        mkdir $OVERLAYS/$1
+        echo $(basename $FIRMWARE/$1*) > $OVERLAYS/$i/path
+}
+
+ovl_remove()
+{
+        rmdir $OVERLAYS/$1
+}
+
+for i in $*; do
+        case $i in
+        add)
+                cmd=ovl_add
+                ;;
+
+        rm)
+                cmd=ovl_remove
+                ;;
+
+        *)
+                $cmd $i
+                ;;
+        esac
+done
