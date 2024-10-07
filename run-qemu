@@ -1,0 +1,17 @@
+#!/bin/sh
+
+set -eu
+
+ZIMAGE=${1:-output/images/zImage}
+
+echo ">>> Kernel image: ${ZIMAGE}"
+
+output/host/usr/bin/qemu-system-arm \
+    -M versatilepb \
+    -kernel ${ZIMAGE} \
+    -dtb output/images/versatile-pb.dtb \
+    -drive file=output/images/rootfs.ext2,if=scsi,format=raw \
+    -append "rootwait root=/dev/sda console=ttyAMA0,115200" \
+    -nographic \
+    -net nic,model=rtl8139 \
+    -net user,hostfwd=tcp::10022-:22
