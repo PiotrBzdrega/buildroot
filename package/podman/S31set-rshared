@@ -1,0 +1,26 @@
+#!/bin/sh
+#
+# Set up /root as shared
+#
+
+start() {
+	printf "Setting root mount as rshared ... "
+	mount --make-rshared /
+}
+
+case "$1" in
+  start)
+      start
+	;;
+  stop)
+    # No action needed on stop
+	;;
+  restart|reload)
+     # No action needed on restart or reload
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart|reload}"
+	exit 1
+esac
+
+exit 0

@@ -65,6 +65,8 @@ define PODMAN_INSTALL_TARGET_CMDS
 	$(INSTALL) -D -m 0755 $(@D)/cni/87-podman-bridge.conflist $(TARGET_DIR)/etc/cni/net.d/87-podman-bridge.conflist
 	$(INSTALL) -D -m 0755 $(@D)/bin/podman $(TARGET_DIR)/usr/bin/podman
 	$(INSTALL) -D -m 0755 $(@D)/bin/rootlessport $(TARGET_DIR)/usr/bin/rootlessport
+
+	$(INSTALL) -D -m 0755 $(CONFIG_DIR)/package/podman/S31set-rshared $(TARGET_DIR)/etc/init.d/S31set-rshared
 endef
 
 define PODMAN_LINUX_CONFIG_FIXUPS
