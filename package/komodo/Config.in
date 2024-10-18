@@ -1,0 +1,4 @@
+config BR2_PACKAGE_KOMODO
+  bool "komodo"
+  help
+    A tool to build and deploy software across many servers.
